@@ -10,7 +10,56 @@
         "version": "v0"
     },
     "paths": {
-        "/api/complains": {
+        "/api-complains/complains": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new complain",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CreateComplains"
+                ],
+                "summary": "Create a new complain",
+                "operationId": "CreateComplain",
+                "parameters": [
+                    {
+                        "description": "Complain data to create",
+                        "name": "requestExhibition",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RequestCreateComplain"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api-complains/complains/all": {
             "get": {
                 "security": [
                     {
@@ -25,7 +74,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Complains"
+                    "GetComplains"
                 ],
                 "summary": "GetAllComplains",
                 "operationId": "GetAllComplains",
@@ -46,14 +95,16 @@
                         "description": "Internal Server Error"
                     }
                 }
-            },
-            "post": {
+            }
+        },
+        "/api-complains/complains/exhibitions": {
+            "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new complain",
+                "description": "GetComplainsGroupByExhibitionName",
                 "consumes": [
                     "application/json"
                 ],
@@ -61,19 +112,102 @@
                     "application/json"
                 ],
                 "tags": [
-                    "complain"
+                    "GetComplains"
                 ],
-                "summary": "Create a new complain",
-                "operationId": "CreateComplain",
+                "summary": "GetComplainsGroupByExhibitionName",
+                "operationId": "GetComplainsGroupByExhibitionName",
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api-complains/complains/exhibitions/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "GetComplainByExhibitionID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GetComplains"
+                ],
+                "summary": "GetComplainByExhibitionID",
+                "operationId": "GetComplainByExhibitionID",
                 "parameters": [
                     {
-                        "description": "Complain data to create",
-                        "name": "requestExhibition",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.RequestCreateComplain"
-                        }
+                        "type": "string",
+                        "description": "Exhibition ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api-complains/complains/exhibitions/{id}/reject": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "DeleteComplainByExhibitionID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rejects"
+                ],
+                "summary": "DeleteComplainByExhibitionID",
+                "operationId": "DeleteComplainByExhibitionID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exhibition ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -124,14 +258,14 @@
         "model.StatusEnum": {
             "type": "string",
             "enum": [
+                "pending",
                 "approved",
-                "rejected",
-                "pending"
+                "rejected"
             ],
             "x-enum-varnames": [
+                "Pending",
                 "Approved",
-                "Rejected",
-                "Pending"
+                "Rejected"
             ]
         },
         "model.User": {

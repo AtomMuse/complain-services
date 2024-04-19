@@ -7,12 +7,13 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	_ "atommuse/backend/complain-services/cmd/complain/doc"
+	"atommuse/backend/complain-services/handler/complainhandler"
 	"atommuse/backend/complain-services/pkg/model"
 	"atommuse/backend/complain-services/pkg/repositorty/complainrepo"
 	"atommuse/backend/complain-services/pkg/service/complainsvc"
+	"atommuse/backend/complain-services/pkg/utils"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
@@ -22,7 +23,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // @Title						Complain Service API
@@ -35,13 +35,13 @@ import (
 func main() {
 	initializeEnvironment()
 
-	mongoURI := os.Getenv("MONGO_URI")
+	mongoURI := os.Getenv("MONGO_URI_COMPLAIN")
 	if mongoURI == "" {
-		log.Fatal("MONGO_URI environment variable not set.")
+		log.Fatal("MONGO_URI_COMPLAIN environment variable not set.")
 	}
 	log.Println("MongoURI:", mongoURI)
 
-	client, err := connectToMongoDB(mongoURI)
+	client, err := utils.ConnectToMongoDB(mongoURI)
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
 	}
@@ -65,25 +65,6 @@ func initializeEnvironment() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file:", err)
 	}
-}
-
-// connectToMongoDB connects to MongoDB
-func connectToMongoDB(uri string) (*mongo.Client, error) {
-	clientOptions := options.Client().ApplyURI(uri)
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	if err := client.Ping(ctx, nil); err != nil {
-		return nil, err
-	}
-
-	log.Printf("Connected to MongoDB at %s\n", uri)
-	return client, nil
 }
 
 // authMiddleware is middleware to validate the token and check the role
@@ -182,11 +163,14 @@ func setupRouter(client *mongo.Client) *gin.Engine {
 	router.Use(cors.New(config))
 
 	// Group routes
-	api := router.Group("/api")
+	api := router.Group("/api-complains")
 	{
 		//Exhibitions
 		api.GET("/complains/all", authMiddleware("admin"), complainHandler.GetAllComplains)
-		api.GET("/complains", authMiddleware("exhibitor"), complainHandler.CreateComplain)
+		api.GET("/complains/exhibitions/:id", authMiddleware("admin"), complainHandler.GetComplainByExhibitionID)
+		api.DELETE("/complains/exhibitions/:id/reject", authMiddleware("admin"), complainHandler.DeleteComplainByExhibitionID)
+		api.GET("/complains/exhibitions", authMiddleware("admin"), complainHandler.GetComplainsGroupByExhibitionName)
+		api.POST("/complains", authMiddleware("exhibitor"), complainHandler.CreateComplain)
 
 	}
 
@@ -194,9 +178,9 @@ func setupRouter(client *mongo.Client) *gin.Engine {
 }
 
 // initComplainHandler initializes the Complain handler with required dependencies
-func initComplainHandler(client *mongo.Client) *complainhanlder.ComplainHandler {
+func initComplainHandler(client *mongo.Client) *complainhandler.ComplainHandler {
 	dbCollection := client.Database("atommuse").Collection("complains")
 	repo := complainrepo.NewComplainRepository(dbCollection)
 	service := complainsvc.NewComplainService(*repo)
-	return complainhanlder.NewComplainHandler(*service)
+	return complainhandler.NewComplainHandler(*service)
 }

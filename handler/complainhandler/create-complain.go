@@ -1,4 +1,4 @@
-package complainhanlder
+package complainhandler
 
 import (
 	"atommuse/backend/complain-services/pkg/model"
@@ -8,20 +8,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//	@Summary		Create a new complain
-//	@Description	Create a new complain
-//	@Tags			complain
-//	@Security		BearerAuth
-//	@ID				CreateComplain
-//	@Accept			json
-//	@Produce		json
-//	@Param			requestExhibition	body	model.RequestCreateComplain	true	"Complain data to create"
-//	@Success		201
-//	@Failure		400
-//	@Failure		401
-//	@Failure		404
-//	@Failure		500
-//	@Router			/api/complains [post]
+// @Summary		Create a new complain
+// @Description	Create a new complain
+// @Tags			CreateComplains
+// @Security		BearerAuth
+// @ID				CreateComplain
+// @Accept			json
+// @Produce		json
+// @Param			requestExhibition	body	model.RequestCreateComplain	true	"Complain data to create"
+// @Success		201
+// @Failure		400
+// @Failure		401
+// @Failure		404
+// @Failure		500
+// @Router			/api-complains/complains [post]
 func (h *ComplainHandler) CreateComplain(c *gin.Context) {
 	// Get user information from request context
 	userID, _ := c.Get("user_id")

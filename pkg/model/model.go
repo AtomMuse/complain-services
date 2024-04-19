@@ -8,9 +8,9 @@ import (
 type StatusEnum string
 
 const (
+	Pending  StatusEnum = "pending"
 	Approved StatusEnum = "approved"
 	Rejected StatusEnum = "rejected"
-	Pending  StatusEnum = "pending"
 )
 
 type Complain struct {
@@ -22,12 +22,10 @@ type Complain struct {
 }
 
 type ResponseComplain struct {
-	ID                  primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	ExhibitionID        primitive.ObjectID `bson:"exhibitionID,omitempty" json:"exhibitionID,omitempty" validate:"required"`
 	ExhibitionName      string             `bson:"exhibitionName,omitempty" json:"exhibitionName,omitempty" validate:"required"`
-	ExhibitionOrganizer string             `bson:"exhibitionOrganizer,omitempty" json:"exhibitionOrganizer,omitempty" validate:"required"`
+	ExhibitionOrganizer UserExhibition     `bson:"exhibitionOrganizer,omitempty" json:"exhibitionOrganizer,omitempty" validate:"required"`
 	ComplainMessage     []Complain         `bson:"complainmessage,omitempty" json:"complainmessage,omitempty" validate:"required"`
-	CreateDateAt        primitive.DateTime `bson:"createDateAt" json:"createDateAt" validate:"required"`
 	Status              StatusEnum         `bson:"status,omitempty" json:"status,omitempty"`
 	BanRequests         string             `bson:"banRequests,omitempty" json:"banRequests,omitempty"`
 }
@@ -56,4 +54,18 @@ type User struct {
 	FirstName    string             `json:"firstname" bson:"firstname"`
 	LastName     string             `json:"lastname" bson:"lastname"`
 	ProfileImage string             `json:"profile,omitempty" bson:"profile,omitempty"`
+}
+
+type UserExhibition struct {
+	ID           primitive.ObjectID `json:"userId" bson:"userId,omitempty"`
+	FirstName    string             `json:"firstname" bson:"firstname"`
+	LastName     string             `json:"lastname" bson:"lastname"`
+	ProfileImage string             `json:"profile,omitempty" bson:"profile,omitempty"`
+}
+
+type Exhibition struct {
+	ExhibitionID        primitive.ObjectID `bson:"exhibitionID,omitempty" json:"exhibitionID,omitempty"`
+	ExhibitionName      string             `bson:"exhibitionName,omitempty" json:"exhibitionName,omitempty"`
+	ExhibitionOrganizer UserExhibition     `bson:"userId,omitempty" json:"exhibitionOrganizer,omitempty"`
+	Status              string             `bson:"status" json:"status" validate:"required" error:"status is required"`
 }
