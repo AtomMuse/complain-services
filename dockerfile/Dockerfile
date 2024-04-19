@@ -9,7 +9,7 @@ COPY go.mod go.sum ./
 COPY . .
 
 # Build the Go application
-RUN go build -o /my-exhibition-app ./cmd/exhibition
+RUN go build -o /my-complain-app ./cmd/complain
 
 # Start a new stage for a small image
 FROM alpine:3.14
@@ -18,13 +18,18 @@ FROM alpine:3.14
 WORKDIR /app
 
 # Copy the built executable from the builder stage
-COPY --from=builder /my-exhibition-app .
+COPY --from=builder /my-complain-app .
 
 # Copy the .env file
 COPY .env .
+
+# Set the time zone
+RUN apk add --no-cache tzdata && \
+    ln -sf /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
+    echo "Asia/Bangkok" > /etc/timezone
 
 # Expose the port the application runs on
 EXPOSE 8080
 
 # Command to run the executable
-CMD ["./my-exhibition-app"]
+CMD ["./my-complain-app"]

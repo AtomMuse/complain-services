@@ -7,19 +7,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//	@Summary		GetAllComplains
-//	@Description	GetAllComplains
-//	@Tags			GetComplains
-//	@Security		BearerAuth
-//	@ID				GetAllComplains
-//	@Accept			json
-//	@Produce		json
-//	@Success		201
-//	@Failure		400
-//	@Failure		401
-//	@Failure		404
-//	@Failure		500
-//	@Router			/api-complains/complains/all [get]
+// @Summary		GetAllComplains
+// @Description	GetAllComplains
+// @Tags			GetComplains
+// @Security		BearerAuth
+// @ID				GetAllComplains
+// @Accept			json
+// @Produce		json
+// @Success		201
+// @Failure		400
+// @Failure		401
+// @Failure		404
+// @Failure		500
+// @Router			/api-complains/complains/all [get]
 func (h *ComplainHandler) GetAllComplains(c *gin.Context) {
 	complains, err := h.service.GetAllComplains(c.Request.Context())
 	if err != nil {
@@ -29,20 +29,20 @@ func (h *ComplainHandler) GetAllComplains(c *gin.Context) {
 	c.JSON(http.StatusOK, complains)
 }
 
-//	@Summary		GetComplainByExhibitionID
-//	@Description	GetComplainByExhibitionID
-//	@Tags			GetComplains
-//	@Security		BearerAuth
-//	@ID				GetComplainByExhibitionID
-//	@Accept			json
-//	@Produce		json
-//	@Param			id	path	string	true	"Exhibition ID"
-//	@Success		201
-//	@Failure		400
-//	@Failure		401
-//	@Failure		404
-//	@Failure		500
-//	@Router			/api-complains/complains/exhibitions/{id} [get]
+// @Summary		GetComplainByExhibitionID
+// @Description	GetComplainByExhibitionID
+// @Tags			GetComplains
+// @Security		BearerAuth
+// @ID				GetComplainByExhibitionID
+// @Accept			json
+// @Produce		json
+// @Param			id	path	string	true	"Exhibition ID"
+// @Success		201
+// @Failure		400
+// @Failure		401
+// @Failure		404
+// @Failure		500
+// @Router			/api-complains/complains/exhibitions/{id} [get]
 func (h *ComplainHandler) GetComplainByExhibitionID(c *gin.Context) {
 	exhibitionID, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
@@ -59,19 +59,19 @@ func (h *ComplainHandler) GetComplainByExhibitionID(c *gin.Context) {
 	c.JSON(http.StatusOK, complain)
 }
 
-//	@Summary		GetComplainsGroupByExhibitionName
-//	@Description	GetComplainsGroupByExhibitionName
-//	@Tags			GetComplains
-//	@Security		BearerAuth
-//	@ID				GetComplainsGroupByExhibitionName
-//	@Accept			json
-//	@Produce		json
-//	@Success		201
-//	@Failure		400
-//	@Failure		401
-//	@Failure		404
-//	@Failure		500
-//	@Router			/api-complains/complains/exhibitions [get]
+// @Summary		GetComplainsGroupByExhibitionName
+// @Description	GetComplainsGroupByExhibitionName
+// @Tags			GetComplains
+// @Security		BearerAuth
+// @ID				GetComplainsGroupByExhibitionName
+// @Accept			json
+// @Produce		json
+// @Success		201
+// @Failure		400
+// @Failure		401
+// @Failure		404
+// @Failure		500
+// @Router			/api-complains/complains/exhibitions [get]
 func (h *ComplainHandler) GetComplainsGroupByExhibitionName(c *gin.Context) {
 	complainsMap, err := h.service.GetAllComplainsGroupByExhibitionName()
 	if err != nil {
